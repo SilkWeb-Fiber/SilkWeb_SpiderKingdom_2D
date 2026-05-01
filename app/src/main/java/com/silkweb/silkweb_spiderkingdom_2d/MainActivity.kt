@@ -1,6 +1,8 @@
 package com.silkweb.silkweb_spiderkingdom_2d
 
 import android.graphics.*
+import androidx.core.graphics.toColorInt
+import androidx.core.graphics.withTranslation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -20,14 +22,8 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var gameThread: Thread? = null
     private var running = false
     
-    private val MAP_RADIUS = 8500f
-    private val MAP_CENTER = 8500f
-    
     private var spiderBitmap: Bitmap? = null
     private var mediaPlayer: android.media.MediaPlayer? = null
-    
-    private var lastScore = -1
-    private var lastSize = -1
 
     private val pressedKeys = mutableSetOf<Int>()
 
@@ -79,7 +75,7 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         
         try {
             spiderBitmap = BitmapFactory.decodeResource(resources, R.drawable.spider_app_icon)
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -97,7 +93,7 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
             mediaPlayer = android.media.MediaPlayer.create(this, R.raw.guqin)
             mediaPlayer?.isLooping = true
             mediaPlayer?.start()
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
     }
 
     override fun onDestroy() {
@@ -136,8 +132,12 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         setJoystick(jx, jy)
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     private fun setupJoystick() {
         binding.joystickZone.setOnTouchListener { v, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                v.performClick()
+            }
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     val centerX = v.width / 2f
@@ -175,6 +175,8 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
     external fun getNPCs(): FloatArray
 
     companion object {
+        private const val MAP_RADIUS = 8500f
+        private const val MAP_CENTER = 8500f
         init {
             System.loadLibrary("silkweb_spiderkingdom_2d")
         }
@@ -213,7 +215,7 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         running = false
         try {
             gameThread?.join()
-        } catch (e: InterruptedException) {}
+        } catch (_: InterruptedException) {}
     }
 
     private fun drawGame(canvas: Canvas) {
@@ -230,31 +232,31 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         if (!active && binding.startMenu.visibility != View.VISIBLE && binding.gameOverMenu.visibility != View.VISIBLE) {
             runOnUiThread {
                 binding.gameOverMenu.visibility = View.VISIBLE
-                binding.finalScoreText.text = "Final Size: ${pr.toInt()}"
-                binding.scoreDisplay.text = "Score: $score"
+                binding.finalScoreText.text = getString(R.string.final_size, pr.toInt())
+                binding.scoreDisplay.text = getString(R.string.score_format, score)
             }
         }
 
-        canvas.drawColor(Color.parseColor("#A9A9A9"))
+        canvas.drawColor("#A9A9A9".toColorInt())
         
         val ox = canvas.width / 2f - px
         val oy = canvas.height / 2f - py
         
         val paint = Paint()
         paint.isAntiAlias = true
-        paint.color = Color.parseColor("#888888")
+        paint.color = "#888888".toColorInt()
         paint.strokeWidth = 2f
         paint.style = Paint.Style.STROKE
 
         // Octagon Boundary and Background Web
-        paint.color = Color.parseColor("#A52A2A")
+        paint.color = "#A52A2A".toColorInt()
         paint.strokeWidth = 3f
         paint.clearShadowLayer()
         
         for (r in 50..MAP_RADIUS.toInt() step 50) {
             if (r == MAP_RADIUS.toInt()) {
                 paint.strokeWidth = 5f
-                paint.setShadowLayer(20f, 0f, 0f, Color.parseColor("#A52A2A"))
+                paint.setShadowLayer(20f, 0f, 0f, "#A52A2A".toColorInt())
             } else {
                 paint.strokeWidth = 3f
                 paint.clearShadowLayer()
@@ -263,8 +265,8 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
             val pathRing = Path()
             for (i in 0..8) {
                 val angle = (PI / 4.0) * i
-                val vx = MAP_CENTER + ox + r * cos(angle).toFloat()
-                val vy = MAP_CENTER + oy + r * sin(angle).toFloat()
+                val vx = MAP_CENTER + ox + r * cos(angle.toFloat())
+                val vy = MAP_CENTER + oy + r * sin(angle.toFloat())
                 if (i == 0) pathRing.moveTo(vx, vy) else pathRing.lineTo(vx, vy)
             }
             canvas.drawPath(pathRing, paint)
@@ -277,8 +279,8 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
             canvas.drawLine(
                 MAP_CENTER + ox,
                 MAP_CENTER + oy,
-                MAP_CENTER + ox + MAP_RADIUS * cos(angle).toFloat(),
-                MAP_CENTER + oy + MAP_RADIUS * sin(angle).toFloat(),
+                MAP_CENTER + ox + MAP_RADIUS * cos(angle.toFloat()),
+                MAP_CENTER + oy + MAP_RADIUS * sin(angle.toFloat()),
                 paint
             )
         }
@@ -296,16 +298,16 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         val marginY = canvas.height * 0.1f
         
         // SIZE (Top Left)
-        uiPaint.color = Color.parseColor("#00ffcc")
+        uiPaint.color = "#00ffcc".toColorInt()
         uiPaint.textAlign = Paint.Align.LEFT
         uiPaint.isFakeBoldText = true
-        canvas.drawText("SIZE: ${pr.toInt()}", marginX, marginY, uiPaint)
+        canvas.drawText(getString(R.string.size_format, pr.toInt()), marginX, marginY, uiPaint)
         
         // Score (Top Right)
         uiPaint.color = Color.WHITE
         uiPaint.textAlign = Paint.Align.RIGHT
         uiPaint.isFakeBoldText = false
-        canvas.drawText("Score: $score", canvas.width - marginX, marginY, uiPaint)
+        canvas.drawText(getString(R.string.score_format, score), canvas.width - marginX, marginY, uiPaint)
 
         // Webs
         val webs = getWebs()
@@ -341,16 +343,16 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         val rings = 8
         paint.isAntiAlias = true
         for (i in 0 until sides) {
-            val a = (i * 2 * PI) / sides
-            canvas.drawLine(x, y, x + radius * cos(a).toFloat(), y + radius * sin(a).toFloat(), paint)
+            val a = (i * 2 * PI.toFloat()) / sides
+            canvas.drawLine(x, y, x + radius * cos(a), y + radius * sin(a), paint)
         }
         for (r in 1..rings) {
             val currentR = radius * (r.toFloat() / rings)
             val path = Path()
             for (i in 0..8) {
-                val a = (PI / 4.0) * i
-                val vx = x + currentR * cos(a).toFloat()
-                val vy = y + currentR * sin(a).toFloat()
+                val a = (PI.toFloat() / 4.0f) * i
+                val vx = x + currentR * cos(a)
+                val vy = y + currentR * sin(a)
                 if (i == 0) path.moveTo(vx, vy) else path.lineTo(vx, vy)
             }
             canvas.drawPath(path, paint)
@@ -364,33 +366,32 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
             p.color = Color.BLACK
             p.style = Paint.Style.FILL
             canvas.drawCircle(sx, sy, r, p)
-            val hx = sx + r * 1.1f * cos(a).toFloat()
-            val hy = sy + r * 1.1f * sin(a).toFloat()
+            val hx = sx + r * 1.1f * cos(a)
+            val hy = sy + r * 1.1f * sin(a)
             canvas.drawCircle(hx, hy, r * 0.7f, p)
             p.strokeWidth = r * 0.15f
             p.style = Paint.Style.STROKE
             p.strokeCap = Paint.Cap.ROUND
             for (i in 0 until 4) {
                 val baseAngle = a + PI.toFloat() / 2f + (i - 1.5f) * 0.4f
-                val x1 = sx + r * 0.8f * cos(baseAngle).toFloat()
-                val y1 = sy + r * 0.8f * sin(baseAngle).toFloat()
-                val x2 = sx + r * 2.0f * cos(baseAngle + 0.3f).toFloat()
-                val y2 = sy + r * 2.0f * sin(baseAngle + 0.3f).toFloat()
+                val x1 = sx + r * 0.8f * cos(baseAngle)
+                val y1 = sy + r * 0.8f * sin(baseAngle)
+                val x2 = sx + r * 2.0f * cos(baseAngle + 0.3f)
+                val y2 = sy + r * 2.0f * sin(baseAngle + 0.3f)
                 canvas.drawLine(x1, y1, x2, y2, p)
                 val baseAngleL = a - PI.toFloat() / 2f - (i - 1.5f) * 0.4f
-                val x1L = sx + r * 0.8f * cos(baseAngleL).toFloat()
-                val y1L = sy + r * 0.8f * sin(baseAngleL).toFloat()
-                val x2L = sx + r * 2.0f * cos(baseAngleL - 0.3f).toFloat()
-                val y2L = sy + r * 2.0f * sin(baseAngleL - 0.3f).toFloat()
+                val x1L = sx + r * 0.8f * cos(baseAngleL)
+                val y1L = sy + r * 0.8f * sin(baseAngleL)
+                val x2L = sx + r * 2.0f * cos(baseAngleL - 0.3f)
+                val y2L = sy + r * 2.0f * sin(baseAngleL - 0.3f)
                 canvas.drawLine(x1L, y1L, x2L, y2L, p)
             }
         } else {
-            canvas.save()
-            canvas.translate(sx, sy)
-            canvas.rotate(Math.toDegrees(a.toDouble() + PI / 2).toFloat())
-            val rect = RectF(-r * 1.4f, -r * 1.4f, r * 1.4f, r * 1.4f)
-            canvas.drawBitmap(spiderBitmap!!, null, rect, null)
-            canvas.restore()
+            canvas.withTranslation(sx, sy) {
+                rotate(Math.toDegrees(a.toDouble() + PI / 2).toFloat())
+                val rect = RectF(-r * 1.4f, -r * 1.4f, r * 1.4f, r * 1.4f)
+                drawBitmap(spiderBitmap!!, null, rect, null)
+            }
         }
     }
 }
