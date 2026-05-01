@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A9A9A9">
+
+    <SurfaceView
+        android:id="@+id/gameSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/startMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A9A9A9"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/menu_background"
+            android:orientation="vertical"
+            android:padding="60dp"
+            android:gravity="center"
+            android:elevation="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SilkWeb-SpiderKingdom-2D"
+                android:textColor="#00ffcc"
+                android:textSize="42sp"
+                android:letterSpacing="0.1"
+                android:gravity="center"
+                android:layout_marginBottom="40dp"
+                android:textStyle="bold"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ENTER"
+                android:background="@drawable/button_border_cyan"
+                android:textColor="#00ffcc"
+                android:paddingLeft="45dp"
+                android:paddingRight="45dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/gameOverMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A9A9A9"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/menu_background_red"
+            android:orientation="vertical"
+            android:padding="60dp"
+            android:gravity="center"
+            android:elevation="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You Dead"
+                android:textColor="#ff4444"
+                android:textSize="60sp"
+                android:layout_marginBottom="15dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/finalScoreText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Final Size: 0"
+                android:textColor="#aaa"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/scoreDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Score: 0"
+                android:textColor="#aaa"
+                android:textSize="18sp"
+                android:layout_marginBottom="40dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnRestart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RESTART"
+                android:background="@drawable/button_border_red"
+                android:textColor="#ff4444"
+                android:paddingLeft="45dp"
+                android:paddingRight="45dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/joystickZone"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="40dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <com.silkweb.silkweb_spiderkingdom_2d.JoystickWebView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center" />
+
+        <View
+            android:id="@+id/joystickKnob"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/joystick_knob_octagon" />
+    </FrameLayout>
+
+</FrameLayout>
