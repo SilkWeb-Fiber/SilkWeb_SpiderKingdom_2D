@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.SurfaceHolder
-import android.view.View
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import com.silkweb.silkweb_spiderkingdom_2d.databinding.ActivityMainBinding
 import kotlin.math.*
 
@@ -46,15 +46,17 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         
         binding.btnStart.setOnClickListener {
             startGame()
-            binding.startMenu.visibility = View.GONE
-            binding.joystickZone.visibility = View.VISIBLE
+            binding.startMenu.isVisible = false
+            binding.joystickZone.isVisible = true
             startMusic()
         }
+        binding.btnStart.requestFocus()
         
         binding.btnRestart.setOnClickListener {
             initGame()
             startGame()
-            binding.gameOverMenu.visibility = View.GONE
+            binding.gameOverMenu.isVisible = false
+            binding.btnRestart.clearFocus()
         }
 
         binding.gameSurface.setOnGenericMotionListener { v, event ->
@@ -103,15 +105,28 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Handle menu interactions first
+        if (binding.startMenu.isVisible || binding.gameOverMenu.isVisible) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (binding.startMenu.isVisible) binding.btnStart.performClick()
+                else binding.btnRestart.performClick()
+                return true
+            }
+            return super.onKeyDown(keyCode, event)
+        }
+
         pressedKeys.add(keyCode)
         updateJoystickFromKeys()
-        return super.onKeyDown(keyCode, event)
+        return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (binding.startMenu.isVisible || binding.gameOverMenu.isVisible) {
+            return super.onKeyUp(keyCode, event)
+        }
         pressedKeys.remove(keyCode)
         updateJoystickFromKeys()
-        return super.onKeyUp(keyCode, event)
+        return true
     }
 
     private fun updateJoystickFromKeys() {
@@ -229,11 +244,12 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         val score = playerState[4].toInt()
         val active = playerState[5] > 0.5f
 
-        if (!active && binding.startMenu.visibility != View.VISIBLE && binding.gameOverMenu.visibility != View.VISIBLE) {
+        if (!active && !binding.startMenu.isVisible && !binding.gameOverMenu.isVisible) {
             runOnUiThread {
-                binding.gameOverMenu.visibility = View.VISIBLE
+                binding.gameOverMenu.isVisible = true
                 binding.finalScoreText.text = getString(R.string.final_size, pr.toInt())
                 binding.scoreDisplay.text = getString(R.string.score_format, score)
+                binding.btnRestart.requestFocus()
             }
         }
 

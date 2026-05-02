@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SilkWeb-SpiderKingdom-2D"
+                android:text="@string/game_title"
                 android:textColor="#00ffcc"
                 android:textSize="42sp"
                 android:letterSpacing="0.1"
@@ -43,7 +43,7 @@
                 android:id="@+id/btnStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ENTER"
+                android:text="@string/btn_enter"
                 android:background="@drawable/button_border_cyan"
                 android:textColor="#00ffcc"
                 android:paddingLeft="45dp"
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You Dead"
+                android:text="@string/game_over"
                 android:textColor="#ff4444"
                 android:textSize="60sp"
                 android:layout_marginBottom="15dp"
@@ -87,7 +87,7 @@
                 android:id="@+id/finalScoreText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Final Size: 0"
+                android:text="@string/final_size"
                 android:textColor="#aaa"
                 android:textSize="18sp" />
 
@@ -95,7 +95,7 @@
                 android:id="@+id/scoreDisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Score: 0"
+                android:text="@string/score_format"
                 android:textColor="#aaa"
                 android:textSize="18sp"
                 android:layout_marginBottom="40dp"/>
@@ -104,7 +104,7 @@
                 android:id="@+id/btnRestart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RESTART"
+                android:text="@string/btn_restart"
                 android:background="@drawable/button_border_red"
                 android:textColor="#ff4444"
                 android:paddingLeft="45dp"

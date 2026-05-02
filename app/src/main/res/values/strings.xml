@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">SilkWeb_SpiderKingdom_2D</string>
+    <string name="game_title">SilkWeb-SpiderKingdom-2D</string>
+    <string name="btn_enter">ENTER</string>
+    <string name="game_over">You Dead</string>
+    <string name="btn_restart">RESTART</string>
     <string name="final_size">Final Size: %1$d</string>
     <string name="size_format">SIZE: %1$d</string>
     <string name="score_format">Score: %1$d</string>
