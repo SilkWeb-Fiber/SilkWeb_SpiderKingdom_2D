@@ -92,6 +92,8 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private fun startMusic() {
         try {
+            if (mediaPlayer?.isPlaying == true) return
+            mediaPlayer?.release()
             mediaPlayer = android.media.MediaPlayer.create(this, R.raw.guqin)
             mediaPlayer?.isLooping = true
             mediaPlayer?.start()
@@ -102,6 +104,16 @@ class MainActivity : AppCompatActivity(), SurfaceHolder.Callback {
         super.onDestroy()
         mediaPlayer?.release()
         mediaPlayer = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer?.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mediaPlayer?.start()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
